@@ -1,27 +1,64 @@
-# Docker-Symfony-Stack
+- mkdir symfony-docker
+- cd symfony-docker
 
-With this Docker-Symfony-Stack it's possible to setup a local development environment in seconds. Every component is selected for running Symfony 7 in a flavored way.
+Project Structure:    
+    symfony-docker/
+    ├── docker-compose.yml
+    ├── nginx/
+    │   └── default.conf
+    ├── php/
+    │   └── Dockerfile
+    └── mysql/
 
-## Getting started
-Copy the .env.dist file and edit the entries to your needs:
-```
-cp .env.dist .env
-```
+# Build the containers:
+    - docker-compose build
 
-Only start docker-compose to start your environment:
-```
-docker-compose up
-```
+# Start the containers:
+    - docker-compose up -d
 
-After booting the container, you can use composer and the symfony cli insight the php-apache container:
-```
-docker exec -it symfony-apache-php bash
-symfony check:requirements
-we set /var/www/html folder synch with App folder in windows in dockerfile
-composer create-project symfony/skeleton ./
-```
+# Verify that the containers are running:
+    - docker-compose ps
 
-## Installed Packages
-You have three container running: Apache-PHP, MariaDB and Adminer.
-- [Web-App](http://localhost)
-- [Adminer](http://localhost:8080)
+# Access the PHP container:
+    - docker exec -it symfony_php bash
+
+# Use Composer to create a new Symfony project:
+    - composer create-project symfony/skeleton my_project
+
+# Move Project
+    - Go to project directory on windows file explorer and move project to one above
+    (Cut the project and paste it in parent folder and then delete my_project folder)
+
+# Configure the Database
+    - Edit the .env file inside your Symfony project (my_project/.env) and set the DATABASE_URL:
+        * DATABASE_URL="mysql://root:root@db:3306/symfony"
+
+- Exit (CTRL D)
+
+- docker-compose down
+- docker-compose up -d
+
+- Go to http://localhost:8080
+
+- docker exec -it symfony_php bash
+
+- composer require symfony/orm-pack
+
+- Uncomment appropriate DATABASE_URL and change username pass and db name
+    * If you want to see database: (If not, skip here)
+        ** docker ps
+        ** docker exec -it <container_id> mysql -u root -p (password root)
+        ** SHOW DATABASES;
+
+- bin/console doctrine:database:create 
+(Muhtemel ilk setupda docker symfony adında DB oluşturuyor, varsa yapmana gerek yok ya da mysql container'ına girip DROP DB yap)
+
+
+# How to WORK With Project 
+- docker-compose up -d
+- Go to http://localhost:8080
+- docker exec -it symfony_php bash
+
+# MYSQL Container Connect
+- docker exec -it <container_id> mysql -u root -p (password root)
+- SHOW DATABASES;
